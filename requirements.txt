@@ -1,0 +1,7 @@
+Flask
+openai
+Flask-SQLAlchemy
+Flask-Migrate
+flask-login
+sqlalchemy
+werkzeug

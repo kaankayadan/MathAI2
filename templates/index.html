@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathQuest - Matematik Macerası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --accent-color: #FF9800;
+            --background-color: #F0F8FF;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question-info {
+            background-color: #e3f2fd;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-info span {
+            font-weight: bold;
+        }
+
+        .difficulty {
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .difficulty-1 { background-color: #4CAF50; }
+        .difficulty-2 { background-color: #FFC107; }
+        .difficulty-3 { background-color: #F44336; }
+
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f1f8e9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        label:hover {
+            background-color: #dcedc8;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .correct {
+            background-color: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        .incorrect {
+            background-color: #ffcdd2;
+            color: #b71c1c;
+        }
+
+        #answer-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .stop-test {
+            background-color: #f44336;
+        }
+
+        .stop-test:hover {
+            background-color: #d32f2f;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MathQuest Macerası</h1>
+        {% if question_data %}
+        <div class="question-info">
+            <div>
+                <span>Konu:</span> {{ question_data.topic }}<br>
+                <span>Alt Konu:</span> {{ question_data.subtopic }}
+            </div>
+            <div class="difficulty difficulty-{{ question_data.difficulty_level }}">
+                Zorluk: {{ question_data.difficulty_level }}
+            </div>
+        </div>
+        <div class="question">
+            <p>{{ question_data.question }}</p>
+        </div>
+        <form method="post">
+            <input type="hidden" name="question" value="{{ question_data.question }}">
+            <input type="hidden" name="correct_answer" value="{{ question_data.correct_answer }}">
+            <input type="hidden" name="explanation" value="{{ question_data.explanation }}">
+            <input type="hidden" name="problem_type" value="{{ question_data.problem_type }}">
+            <input type="hidden" name="difficulty_level" value="{{ question_data.difficulty_level }}">
+            
+            <div class="choices">
+                {% for choice in question_data.choices %}
+                <label>
+                    <input type="radio" name="answer" value="{{ choice }}" required>
+                    {{ choice }}
+                </label>
+                {% endfor %}
+            </div>
+            
+            <button type="submit">Cevapla</button>
+        </form>
+        {% endif %}
+
+        {% if result %}
+            <div class="result {% if 'Doğru' in result %}correct{% else %}incorrect{% endif %}">
+                <h2>{{ result }}</h2>
+            </div>
+            {% if show_answer %}
+                <div id="answer-box">
+                    <p><strong>Doğru Cevap ve Çözüm Yolu:</strong></p>
+                    <p>{{ question_data.explanation }}</p>
+                </div>
+            {% endif %}
+            <div class="buttons">
+                <form method="post">
+                    <input type="hidden" name="next_question" value="next">
+                    <button type="submit">Sonraki Soru</button>
+                </form>
+                <form action="{{ url_for('main.stop_test') }}" method="post">
+                    <input type="hidden" name="student_id" value="{{ current_user.id }}">
+                    <button type="submit" class="stop-test">Testi Bitir</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

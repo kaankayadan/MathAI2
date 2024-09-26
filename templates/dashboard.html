@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Adventure Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- React ve Framer Motion için CDN bağlantıları -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js"></script>
+    <div id="ai-teacher-modal-root"></div>
+    <script src="path/to/ai-teacher-modal.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Math Adventure Dashboard</h1>
+        <nav>
+            <a href="#overview">Overview</a>
+            <a href="#progress">Progress</a>
+            <a href="#achievements">Achievements</a>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <button class="parent-mode-toggle" onclick="toggleParentMode()">Toggle Parent Mode</button>
+
+        <section id="overview" class="dashboard-section">
+            <h2>Welcome, {{ student.first_name }}!</h2>
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </section>
+
+        <section id="progress" class="dashboard-section">
+            <h2>Your Math Journey</h2>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Daily Goal</span>
+                    <span>{{ daily_progress }}% (Target: {{ daily_target }})</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-bar-inner daily" style="width: {{ daily_progress }}%"></div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Weekly Goal</span>
+                    <span>{{ weekly_progress }}% (Target: {{ weekly_target }})</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-bar-inner weekly" style="width: {{ weekly_progress }}%"></div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Monthly Goal</span>
+                    <span>{{ monthly_progress }}% (Target: {{ monthly_target }})</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-bar-inner monthly" style="width: {{ monthly_progress }}%"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="achievements" class="dashboard-section">
+            <h2>Your Achievements</h2>
+            <div class="badges-container">
+                <div class="badge" data-level="1" data-required="10">
+                    <img src="{{ url_for('static', filename='img/badge1.png') }}" alt="Badge 1">
+                </div>
+                <div class="badge" data-level="2" data-required="250">
+                    <img src="{{ url_for('static', filename='img/badge2.png') }}" alt="Badge 2">
+                </div>
+                <div class="badge" data-level="3" data-required="500">
+                    <img src="{{ url_for('static', filename='img/badge3.png') }}" alt="Badge 3">
+                </div>
+                <div class="badge" data-level="4" data-required="1000">
+                    <img src="{{ url_for('static', filename='img/badge4.png') }}" alt="Badge 4">
+                </div>
+                <div class="badge" data-level="5" data-required="5000">
+                    <img src="{{ url_for('static', filename='img/badge5.png') }}" alt="Badge 5">
+                </div>
+            </div>
+        </section>
+
+        <div id="parentDashboard" class="parent-mode-content">
+            <section class="dashboard-section">
+                <h2>Performance Overview</h2>
+                <div class="performance-overview">
+                    <div class="performance-stat">
+                        <div class="number">{{ correct_count + incorrect_count }}</div>
+                        <div class="label">Total Questions</div>
+                    </div>
+                    <div class="performance-stat">
+                        <div class="number">{{ correct_count }}</div>
+                        <div class="label">Correct Answers</div>
+                    </div>
+                    <div class="performance-stat">
+                        <div class="number">{{ incorrect_count }}</div>
+                        <div class="label">Incorrect Answers</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Performance by Category</h2>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Recent Performance Records</h2>
+                <div class="performance-records">
+                    <ul>
+                        {% for performance in performances %}
+                        <li class="performance-record">
+                            <strong>Question:</strong> <span data-question="{{ performance.question }}">{{ performance.question }}</span><br>
+                            <strong>Student's Answer:</strong> <span data-student-answer="{{ performance.user_answer }}">{{ performance.user_answer }}</span><br>
+                            <strong>Correct Answer:</strong> <span data-correct-answer="{{ performance.correct_answer }}">{{ performance.correct_answer }}</span><br>
+                            <strong>Result:</strong> <span class="{{ 'correct' if performance.is_correct else 'incorrect' }}" data-is-correct="{{ performance.is_correct }}">{{ "Correct" if performance.is_correct else "Incorrect" }}</span><br>
+                            <strong>Time:</strong> {{ performance.response_time }} seconds<br>
+                            <strong>Problem Type:</strong> <span data-problem-type="{{ performance.problem_type }}">{{ performance.problem_type }}</span><br>
+                            <strong>Timestamp:</strong> {{ performance.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+                            {% if not performance.is_correct %}
+                            <button class="ai-teacher-button" onclick="renderAITeacherModal('{{ performance.question | replace("'", "\\'") }}', '{{ performance.user_answer | replace("'", "\\'") }}', '{{ performance.correct_answer | replace("'", "\\'") }}', '{{ performance.problem_type | replace("'", "\\'") }}')">AI Teacher</button>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h2>Strengths and Areas for Improvement</h2>
+                <div class="strengths-improvements">
+                    <div>
+                        <h3>Strengths</h3>
+                        <ul id="strengths"></ul>
+                    </div>
+                    <div>
+                        <h3>Areas for Improvement</h3>
+                        <ul id="improvements"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h2>Settings</h2>
+                <div class="settings-container">
+                    <div class="settings-item">
+                        <h3>Goal Setting</h3>
+                        <form id="goalSettingForm" class="goal-setting">
+                            <label>Daily Target: <input type="number" id="dailyTarget" value="{{ daily_target }}"></label><br>
+                            <label>Weekly Target: <input type="number" id="weeklyTarget" value="{{ weekly_target }}"></label><br>
+                            <label>Monthly Target: <input type="number" id="monthlyTarget" value="{{ monthly_target }}"></label><br>
+                            <button type="submit">Update Goals</button>
+                        </form>
+                    </div>
+                    <div class="settings-item">
+                        <h3>Password Management</h3>
+                        <div class="password-management">
+                            <button onclick="changeStudentPassword()">Change Student Dashboard Password</button>
+                            <button onclick="changeParentPassword()">Change Parent Mode Password</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <button class="start-test-button" onclick="startTest()">Start New Adventure!</button>
+    </main>
+
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-content-inner">
+                <h2 id="modalTitle"></h2>
+                <form id="passwordForm">
+                    <input type="password" id="parentPassword" placeholder="Enter password" required>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-teacher-modal-root"></div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ai-teacher-modal.js') }}"></script>
+
+    <script>
+        var correct_count = {{ correct_count }};
+        var incorrect_count = {{ incorrect_count }};
+        var studentId = {{ student.id }};
+    </script>
+    <script id="categoryCorrectData" type="application/json">
+        {{ category_correct | tojson | safe }}
+    </script>
+    <script id="categoryIncorrectData" type="application/json">
+        {{ category_incorrect | tojson | safe }}
+    </script>
+</body>
+</html>

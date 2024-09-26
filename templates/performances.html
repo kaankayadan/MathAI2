@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Performances</title>
+</head>
+<body>
+    <h1>Performances</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Student ID</th>
+            <th>Question</th>
+            <th>User Answer</th>
+            <th>Correct Answer</th>
+            <th>Is Correct</th>
+            <th>Response Time</th>
+            <th>Problem Type</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for performance in performances %}
+        <tr>
+            <td>{{ performance.id }}</td>
+            <td>{{ performance.student_id }}</td>
+            <td>{{ performance.question }}</td>
+            <td>{{ performance.user_answer }}</td>
+            <td>{{ performance.correct_answer }}</td>
+            <td>{{ performance.is_correct }}</td>
+            <td>{{ performance.response_time }}</td>
+            <td>{{ performance.problem_type }}</td>
+            <td>{{ performance.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

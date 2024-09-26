@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathQuest - Giriş</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #geometric-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #f0f4f8;
+        }
+        .shape {
+            position: absolute;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .login-container {
+            position: relative;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 100px auto;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 150px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .links {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .links a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="geometric-background"></div>
+
+    <div class="login-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/mathquest-logo.png') }}" alt="MathQuest Logo">
+        </div>
+        <h1>MathQuest'e Hoş Geldiniz!</h1>
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="email">E-posta:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Giriş Yap</button>
+        </form>
+        <div class="links">
+            <a href="/register">Hesap Oluştur</a>
+            <a href="/forgot-password">Şifremi Unuttum</a>
+        </div>
+    </div>
+
+    <script>
+        const background = document.getElementById('geometric-background');
+        const shapes = ['circle', 'triangle', 'square', 'pentagon', 'hexagon'];
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
+
+        function createSVGElement(type) {
+            return document.createElementNS('http://www.w3.org/2000/svg', type);
+        }
+
+        function createShape() {
+            const svg = createSVGElement('svg');
+            svg.setAttribute('width', '60');
+            svg.setAttribute('height', '60');
+            svg.classList.add('shape');
+
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            let path;
+            switch(shape) {
+                case 'circle':
+                    path = createSVGElement('circle');
+                    path.setAttribute('cx', '30');
+                    path.setAttribute('cy', '30');
+                    path.setAttribute('r', '25');
+                    break;
+                case 'triangle':
+                    path = createSVGElement('polygon');
+                    path.setAttribute('points', '30,5 55,55 5,55');
+                    break;
+                case 'square':
+                    path = createSVGElement('rect');
+                    path.setAttribute('x', '5');
+                    path.setAttribute('y', '5');
+                    path.setAttribute('width', '50');
+                    path.setAttribute('height', '50');
+                    break;
+                case 'pentagon':
+                    path = createSVGElement('polygon');
+                    path.setAttribute('points', '30,5 55,25 45,55 15,55 5,25');
+                    break;
+                case 'hexagon':
+                    path = createSVGElement('polygon');
+                    path.setAttribute('points', '30,5 55,20 55,40 30,55 5,40 5,20');
+                    break;
+            }
+
+            path.setAttribute('fill', color);
+            svg.appendChild(path);
+
+            svg.style.left = `${Math.random() * 100}%`;
+            svg.style.top = `${Math.random() * 100}%`;
+            background.appendChild(svg);
+
+            const rotation = Math.random() * 360;
+            const scale = 0.5 + Math.random() * 1.5;
+            svg.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+
+            setTimeout(() => {
+                svg.style.opacity = '0';
+                setTimeout(() => svg.remove(), 500);
+            }, 5000);
+        }
+
+        function createConnection() {
+            const shapes = document.querySelectorAll('.shape');
+            if (shapes.length < 2) return;
+
+            const svg = createSVGElement('svg');
+            svg.style.position = 'absolute';
+            svg.style.top = '0';
+            svg.style.left = '0';
+            svg.style.width = '100%';
+            svg.style.height = '100%';
+            svg.style.pointerEvents = 'none';
+
+            const line = createSVGElement('line');
+            const shape1 = shapes[Math.floor(Math.random() * shapes.length)];
+            const shape2 = shapes[Math.floor(Math.random() * shapes.length)];
+
+            const rect1 = shape1.getBoundingClientRect();
+            const rect2 = shape2.getBoundingClientRect();
+
+            line.setAttribute('x1', rect1.left + rect1.width / 2);
+            line.setAttribute('y1', rect1.top + rect1.height / 2);
+            line.setAttribute('x2', rect2.left + rect2.width / 2);
+            line.setAttribute('y2', rect2.top + rect2.height / 2);
+            line.setAttribute('stroke', 'rgba(255,255,255,0.3)');
+            line.setAttribute('stroke-width', '1');
+
+            svg.appendChild(line);
+            background.appendChild(svg);
+
+            setTimeout(() => svg.remove(), 1000);
+        }
+
+        setInterval(createShape, 1000);
+        setInterval(createConnection, 500);
+
+        background.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.shape');
+            shapes.forEach(shape => {
+                const rect = shape.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const deltaX = e.clientX - centerX;
+                const deltaY = e.clientY - centerY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const maxDistance = 200;
+
+                if (distance < maxDistance) {
+                    const scale = 1 + (maxDistance - distance) / maxDistance;
+                    shape.style.transform = `scale(${scale})`;
+                } else {
+                    shape.style.transform = 'scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

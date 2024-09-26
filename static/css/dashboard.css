@@ -1,0 +1,433 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #2196F3;
+    --accent-color: #FF9800;
+    --background-color: #F0F8FF;
+    --text-color: #333;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--accent-color);
+}
+
+main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+.dashboard-section {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    height: 300px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.progress-container {
+    margin: 20px 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.progress-bar-inner {
+    height: 20px;
+    border-radius: 25px;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    font-weight: bold;
+    transition: width 1s ease-in-out;
+}
+
+.daily { background-color: var(--primary-color); }
+.weekly { background-color: var(--secondary-color); }
+.monthly { background-color: var(--accent-color); }
+
+.performance-records {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.performance-records ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.performance-record {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.performance-record:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.performance-record .correct {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.performance-record .incorrect {
+    color: #F44336;
+    font-weight: bold;
+}
+
+.ai-teacher-button {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ai-teacher-button:hover {
+    background-color: #1976D2;
+}
+
+.start-test-button {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.start-test-button:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+.badges-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.badge {
+    width: calc(20% - 16px);
+    aspect-ratio: 1 / 1;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.badge img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.badge.active {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.badge:hover {
+    transform: scale(1.05);
+}
+
+.parent-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.parent-mode-toggle:hover {
+    background-color: var(--accent-color);
+}
+
+.parent-mode-content {
+    display: none;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: var(--background-color);
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid var(--primary-color);
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.modal-content-inner {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.modal-content input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+}
+
+.modal-content button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: var(--accent-color);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.performance-overview {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.performance-stat {
+    text-align: center;
+}
+
+.performance-stat .number {
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+.performance-stat .label {
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.settings-section {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.settings-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.settings-item {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    width: calc(50% - 20px);
+    box-sizing: border-box;
+}
+
+.settings-item h3 {
+    margin-top: 0;
+    border-bottom: 2px solid white;
+    padding-bottom: 10px;
+}
+
+.goal-setting input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+.goal-setting button, .password-management button {
+    background-color: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.goal-setting button:hover, .password-management button:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.strengths-improvements {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.strengths-improvements > div {
+    width: 48%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.strengths-improvements h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+}
+
+.strengths-improvements ul {
+    padding-left: 20px;
+    color: var(--text-color);
+}
+
+.strengths-improvements li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.strengths-improvements li::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+#strengths li::before {
+    background-color: var(--primary-color);
+}
+
+#improvements li::before {
+    background-color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+    .chart-container, .settings-item, .strengths-improvements > div {
+        width: 100%;
+    }
+    .strengths-improvements {
+        flex-direction: column;
+    }
+    .badge {
+        width: calc(33.33% - 13.33px);
+    }
+}
